@@ -1,0 +1,50 @@
+{
+  "name": "offline-notion",
+  "version": "1.0.0",
+  "description": "A fully offline Notion-like productivity workspace",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "concurrently \"npm run backend\" \"npm run frontend\" \"wait-on http://localhost:3001 && npm run electron\"",
+    "electron": "electron .",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npm run dev",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
+    "package": "npm run build && electron-builder",
+    "postinstall": "cd frontend && npm install && cd ../backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.offline-notion.app",
+    "productName": "OfflineNotion",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*",
+      "backend/dist/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "extraResources": [
+      {
+        "from": "backend/",
+        "to": "backend/",
+        "filter": ["**/*", "!node_modules/**/*", "!src/**/*"]
+      }
+    ]
+  }
+}
